@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <HeaderApp />
     <router-view/>
   </div>
 </template>
@@ -8,14 +7,9 @@
 <script>
   import { mapActions } from 'vuex'
 
-  import HeaderApp from '@/components/HeaderApp'
-
   export default {
     mounted() {
       this.authState()
-    },
-    components: {
-      HeaderApp
     },
     methods: {
       ...mapActions({
@@ -26,24 +20,4 @@
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
 </style>

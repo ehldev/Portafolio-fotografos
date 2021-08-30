@@ -1,0 +1,22 @@
+@import "./variables";
+
+@import 'node_modules/bootstrap/scss/bootstrap.scss';
+@import 'node_modules/bootstrap-vue/src/index.scss';
+
+body {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 700 !important;
+}
+
+p {
+  color: $dark;
+}
+
+.font-weight-normal {
+  font-weight: 300 !important;
+}

@@ -1,4 +1,4 @@
-import firebase from 'firebase'
+import { firebaseAuth, db, firebaseTimestamp } from '@/firebase/firebaseConfig'
 
 export const auth = {
 	namespaced: true,
@@ -14,54 +14,99 @@ export const auth = {
 	},
 
 	actions: {
-		async login({commit}, credentials) {
-			await firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password)
-			  .then((userCredential) => {
+		registration({commit, dispatch}, {name, email, password}) {
+			return new Promise((resolve, reject) => {
+				firebaseAuth.createUserWithEmailAndPassword(email, password)
+				  	.then((userCredential) => {
+				    	var user = userCredential.user;
 
-			  	let { id, email, emailVerified } = userCredential.user
+				      	db.collection("users").add({
+				          userId: user.uid,
+				          name,
+				          email,
+				          photo: '',
+				          createdAt: firebaseTimestamp
+				      	})
+				      	.then((docRef) => {
+				          dispatch('login', {email, password})
+				          	.then(() => {
+				          		dispatch('sendEmailVerify')
+				          			.then(() => resolve())
+				          	})
+				      	})
+				      	.catch((error) => {
+				          console.error("Error adding document: ", error);
+				      	})
+				  	})
+				  	.catch((error) => {
+				    	reject(error)
+					});
+			})
+		},
+		login({commit}, credentials) {
+			return new Promise((resolve, reject) => {
+				firebaseAuth.signInWithEmailAndPassword(credentials.email, credentials.password)
+				  .then((userCredential) => {
 
-			    // Signed in
-			    var user = {
-			    	id,
-			    	email,
-			    	emailVerified
-			    }
+				  	let { uid, email, emailVerified } = userCredential.user
 
-			    commit('SET_USER', user)
-			  })
-			  .catch((error) => {
-			    var errorCode = error.code;
-			    var errorMessage = error.message;
-			});
+				    // Signed in
+				    var user = {
+				    	id: uid,
+				    	email,
+				    	emailVerified
+				    }
 
-			return Promise.resolve("Success")
+				    commit('SET_USER', user)
+
+				    resolve()
+				  })
+				  .catch((error) => {
+				    reject(error)
+				  });
+			})
 		},
 		async logout({commit}) {
-			firebase.auth().signOut().then(() => {
+			firebaseAuth.signOut()
+			.then(() => {
 			  let user = null
 
 			  commit('SET_USER', user)
-			}).catch((error) => {
-			  // An error happened.
-			});
+			})
 		},
-		async authState({commit}) {
-			firebase.auth().onAuthStateChanged((user) => {
-			  if (user) {
-			    
-			  	let { id, email, emailVerified } = user
+		authState({commit}) {
+			return new Promise(resolve => {
+				firebaseAuth.onAuthStateChanged((user) => {
+				  if (user) {
+				    
+				  	let { uid, email, emailVerified } = user
 
-			    // Signed in
-			    var data = {
-			    	id,
-			    	email,
-			    	emailVerified
-			    }
+				    var data = {
+				    	id: uid,
+				    	email,
+				    	emailVerified
+				    }
 
-			    commit('SET_USER', data)
+				    commit('SET_USER', data)
+				  }
 
-			  }
-			});
+				  resolve()
+				});
+			})
+		},
+		async sendEmailVerify() {
+			await firebaseAuth.currentUser.sendEmailVerification()
+		},
+		sendEmailResetPassword({ commit }, { email }) {
+			return new Promise((resolve, reject) => {
+				firebaseAuth.sendPasswordResetEmail(email)
+					.then(() => {
+						resolve()
+					})
+					.catch((error) => {
+						reject(error)
+					})
+			})
 		}
 	}
 }

@@ -1,6 +1,6 @@
 <template>
-	<header>
-		<button type="button" @click="logoutAction" v-if="user">Salir</button>
+	<header class="header d-flex justify-content-end align-items-center py-2 px-3">
+		<button type="button" class="btn btn-danger text-white" @click="logoutAction" v-if="user">Salir</button>
 
 		<router-link to="/login" v-else>Login</router-link>
 	</header>
@@ -33,3 +33,14 @@
 		}
 	}
 </script>
+
+<style lang="scss">
+.header {
+	width: 50%;
+	height: 50px;
+
+	position: fixed;
+	top: 0;
+	right: 0;
+}
+</style>
