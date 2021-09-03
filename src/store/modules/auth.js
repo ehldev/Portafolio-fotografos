@@ -1,5 +1,11 @@
 import { firebaseAuth, db, firebaseTimestamp } from '@/firebase/firebaseConfig'
 
+const generateUsername = email => {
+	let indexArroba = email.indexOf('@')
+
+	return email.substr(0, indexArroba)
+}
+
 export const auth = {
 	namespaced: true,
 
@@ -20,9 +26,12 @@ export const auth = {
 				  	.then((userCredential) => {
 				    	var user = userCredential.user;
 
+				    	let username = generateUsername(email)
+
 				      	db.collection("users").add({
 				          userId: user.uid,
 				          name,
+				          username,
 				          email,
 				          photo: '',
 				          createdAt: firebaseTimestamp
@@ -50,16 +59,15 @@ export const auth = {
 
 				  	let { uid, email, emailVerified } = userCredential.user
 
-				    // Signed in
-				    var user = {
-				    	id: uid,
-				    	email,
-				    	emailVerified
-				    }
+				    let dataForGetInfo = {
+				  		uid,
+				  		email,
+				  		emailVerified
+				  	}
 
-				    commit('SET_USER', user)
-
-				    resolve()
+				  	
+				  	dispatch('getUserData', dataForGetInfo)
+				  		.then(() => resolve())
 				  })
 				  .catch((error) => {
 				    reject(error)
@@ -74,23 +82,26 @@ export const auth = {
 			  commit('SET_USER', user)
 			})
 		},
-		authState({commit}) {
+		authState({commit, dispatch}) {
 			return new Promise(resolve => {
 				firebaseAuth.onAuthStateChanged((user) => {
 				  if (user) {
-				    
+
 				  	let { uid, email, emailVerified } = user
 
-				    var data = {
-				    	id: uid,
-				    	email,
-				    	emailVerified
-				    }
+				  	let dataForGetInfo = {
+				  		uid,
+				  		email,
+				  		emailVerified
+				  	}
 
-				    commit('SET_USER', data)
+				  	
+				  	dispatch('getUserData', dataForGetInfo)
+				  		.then(() => resolve())
+
+				  } else {
+				  	resolve()
 				  }
-
-				  resolve()
 				});
 			})
 		},
@@ -107,6 +118,29 @@ export const auth = {
 						reject(error)
 					})
 			})
+		},
+		async getUserData({ commit }, data) {
+			await db.collection("users").where("userId", "==", data.uid)
+		  		.get()
+			    .then((querySnapshot) => {
+			        querySnapshot.forEach((doc) => {
+			            let { name, username, photo } = doc.data()
+
+					    var userData = {
+					    	id: data.uid,
+					    	name,
+					    	username,
+					    	photo,
+					    	email: data.email,
+					    	emailVerified: data.emailVerified
+					    }
+
+				    	commit('SET_USER', userData)
+			        });
+			    })
+			    .catch((error) => {
+			        console.log("Error getting documents: ", error);
+			    });
 		}
 	}
 }

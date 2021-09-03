@@ -1,46 +1,53 @@
 <template>
   <div class="home">
-    <div class="home__image h-100">
-      
-    </div>
+    <template v-if="!user">
+      <div class="home__image h-100">  
+      </div>
 
-    <div class="home__content h-100 py-5 px-3">
-      <div class="container h-100">
-        <div class="row h-100 justify-content-center align-items-center">
-          <div class="col-md-8">
-            <div class="text-center">
-              <h1 class="home__title font-weight-bold my-0">Muéstrale al mundo</h1>
-              <h2 class="home__subtitle mt-1">Tus mejores fotos</h2>
+      <div class="home__content h-100 py-5 px-3">
+        <div class="container h-100">
+          <div class="row h-100 justify-content-center align-items-center">
+            <div class="col-md-8">
+              <div class="text-center">
+                <h1 class="home__title font-weight-bold my-0">Muéstrale al mundo</h1>
+                <h2 class="home__subtitle mt-1">Tus mejores fotos</h2>
 
-              <section class="text-left">
-                <FormRegistration v-if="tipoFormulario === 'REGISTRO'">
-                  <template slot="link">
-                    <b-button type="button" variant="link" class="text-dark small pl-0" @click="tipoFormulario = 'INGRESAR'">Tengo una cuenta</b-button>
-                  </template>
-                </FormRegistration>
+                <section class="text-left">
+                  <FormRegistration v-if="tipoFormulario === 'REGISTRO'">
+                    <template slot="link">
+                      <b-button type="button" variant="link" class="text-dark small pl-0" @click="tipoFormulario = 'INGRESAR'">Tengo una cuenta</b-button>
+                    </template>
+                  </FormRegistration>
 
 
-                <FormLogin v-if="tipoFormulario === 'INGRESAR'" @reset="tipoFormulario = 'RESTABLECER_PASSWORD'">
-                  <template slot="link">
-                    <b-button type="button" variant="link" class="text-dark small pl-0" @click="tipoFormulario = 'REGISTRO'">Quiero registrarme</b-button>
-                  </template>
-                </FormLogin>
+                  <FormLogin v-if="tipoFormulario === 'INGRESAR'" @reset="tipoFormulario = 'RESTABLECER_PASSWORD'">
+                    <template slot="link">
+                      <b-button type="button" variant="link" class="text-dark small pl-0" @click="tipoFormulario = 'REGISTRO'">Quiero registrarme</b-button>
+                    </template>
+                  </FormLogin>
 
-                <FormResetPassword v-if="tipoFormulario === 'RESTABLECER_PASSWORD'">
-                  <template slot="link">
-                    <b-button type="button" variant="link" class="text-dark small pl-0" @click="tipoFormulario = 'INGRESAR'">Regresar</b-button>
-                  </template>
-                </FormResetPassword>
-              </section>  
+                  <FormResetPassword v-if="tipoFormulario === 'RESTABLECER_PASSWORD'">
+                    <template slot="link">
+                      <b-button type="button" variant="link" class="text-dark small pl-0" @click="tipoFormulario = 'INGRESAR'">Regresar</b-button>
+                    </template>
+                  </FormResetPassword>
+                </section>  
+              </div>
             </div>
           </div>
-        </div>
-      </div>  
-    </div>
+        </div>  
+      </div>
+    </template>
+
+    <template v-else>
+      <h1>Bienvenido {{ user.name }}</h1>
+    </template>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import FormRegistration  from '@/components/auth/FormRegistration'
 import FormLogin  from '@/components/auth/FormLogin'
 import FormResetPassword  from '@/components/auth/FormResetPassword'
@@ -56,6 +63,11 @@ export default {
     FormRegistration,
     FormLogin,
     FormResetPassword
+  },
+  computed: {
+    ...mapState({
+        user: state => state.auth.user
+    })
   }
 }
 </script>
