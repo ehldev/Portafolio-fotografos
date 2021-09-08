@@ -1,7 +1,8 @@
 <template>
   <div class="home">
-    <template v-if="!user">
-      <div class="home__image h-100">  
+    <template>
+      <div class="home__image h-100 d-flex justify-content-end align-items-end p-4">
+        <router-link to="/" class="badge badge-light">@ehldev</router-link>
       </div>
 
       <div class="home__content h-100 py-5 px-3">
@@ -37,10 +38,6 @@
           </div>
         </div>  
       </div>
-    </template>
-
-    <template v-else>
-      <h1>Bienvenido {{ user.name }}</h1>
     </template>
   </div>
 </template>
@@ -83,6 +80,12 @@ export default {
     background-image: url('https://i.pinimg.com/originals/73/53/c6/7353c69376d019fe48b6f6e175490a6e.jpg');
     background-size: cover;
     background-position: center;
+  }
+
+  .badge {
+    &:hover {
+      background-color: $light;
+    }
   }
 
   &__title {

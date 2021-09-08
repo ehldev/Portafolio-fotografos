@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Index from '../views/Index.vue'
 import store from '../store'
 
 Vue.use(VueRouter)
@@ -8,8 +8,8 @@ Vue.use(VueRouter)
 const routes = [
 	{
 		path: '/',
-		name: 'Home',
-		component: Home
+		name: 'Index',
+		component: Index
 	},
 	{
 		path: '/about',

@@ -142,5 +142,10 @@ export const auth = {
 			        console.log("Error getting documents: ", error);
 			    });
 		}
+	},
+	getters: {
+		user(state) {
+			return state.user
+		}
 	}
 }

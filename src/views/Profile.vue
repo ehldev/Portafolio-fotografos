@@ -8,8 +8,6 @@
         <pre>
           {{ user }}
         </pre>
-
-        <AdminNav />
       </div>
 
       <div class="col-md-6">
@@ -25,8 +23,6 @@
 
 <script>
   import { mapState } from 'vuex'
-
-  import AdminNav from '@/components/admin/AdminNav'
 
   export default {
     data() {

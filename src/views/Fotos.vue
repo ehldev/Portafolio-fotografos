@@ -2,13 +2,11 @@
   <div class="container admin-fotos mt-5">
     <div class="row justify-content-center">
       <div class="col-md-8 text-center">
-        <h1>Erick Huamani</h1>
-        <h2 class="small font-weight-normal">Fotos</h2>
-
-        <AdminNav />
+        <h1>Subir fotos</h1>
+        <h2 class="small font-weight-normal">Muéstrale al mundo tus mejores</h2>
       </div>
 
-      <div class="col-md-12 mt-5">
+      <div class="col-md-9 mt-3">
         <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions" @vdropzone-complete="complete($event)">
           <div class="dropzone-custom-content">
             <h3 class="dropzone-custom-title">Drag and drop to upload content!</h3>
@@ -36,8 +34,6 @@
   import vueDropzone from 'vue2-dropzone'
   import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 
-  import AdminNav from '@/components/admin/AdminNav'
-
   const storageRef = firebase.storage().ref();
   const db = firebase.firestore()
 
@@ -58,7 +54,6 @@
       }, 1000)
     },
     components: {
-      AdminNav,
       vueDropzone
     },
     methods: {
