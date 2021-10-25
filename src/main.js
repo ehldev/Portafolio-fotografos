@@ -23,6 +23,14 @@ import VueToast from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 Vue.use(VueToast)
 
+// https://www.npmjs.com/package/vue-moment
+const moment = require('moment')
+require('moment/locale/es')
+ 
+Vue.use(require('vue-moment'), {
+    moment
+})
+
 // Primero se verifica si existe un usuario logueado para luego mostrar la app
 store.dispatch('auth/authState')
   .then(() => {

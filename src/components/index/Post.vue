@@ -3,8 +3,9 @@
     <b-card
       :img-src="item.url"
       img-alt="Image"
-      class="main-card mb-4 border-0 bg-dark"
+      class="main-card mb-4 border-0 bg-dark pointer"
       no-body
+      @click="seleccionar()"
     >
       <b-card-text class="bg-dark p-2">
         <p class="card-description text-muted my-0">Lorem ipsum dolor sit, amet, consectetur adipisicing elit. Quia tenetur explicabo consequatur quidem cupiditate, officia.</p>
@@ -18,6 +19,11 @@ export default {
   props: {
     item: Object,
   },
+  methods: {
+    seleccionar() {
+      this.$emit('selected', this.item)
+    }
+  }
 };
 </script>
 

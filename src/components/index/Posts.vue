@@ -30,6 +30,7 @@
     </div>
 
     <section class="container mt-3">
+
       <div class="row" v-if="grid === 'three'">
         <div class="col-md-12">
           <div>
@@ -38,6 +39,7 @@
                 v-for="(item, index) in posts"
                 :key="index"
                 :item="item"
+                @selected="setItemSeleccionado($event)"
               ></post>
             </b-card-group>
           </div>
@@ -46,7 +48,7 @@
 
       <div class="row" v-else>
         <div class="col-md-6" v-for="(item, index) in posts" :key="index">
-          <post :item="item"></post>
+          <post :item="item" @selected="setItemSeleccionado($event)"></post>
         </div>
       </div>
     </section>
@@ -59,11 +61,16 @@
     >
       Existen nuevos posts
     </button>
+
+    <ModalDetail :item="itemSeleccionado" />
   </div>
 </template>
 
 <script>
 import Post from "./Post";
+
+// Components
+import ModalDetail from '@/components/posts/ModalDetail'
 
 export default {
   data() {
@@ -72,6 +79,7 @@ export default {
       newPosts: [],
       showAlert: false,
       grid: "three",
+      itemSeleccionado: null
     };
   },
   mounted() {
@@ -85,6 +93,7 @@ export default {
   },
   components: {
     Post,
+    ModalDetail
   },
   watch: {
     items: function (val) {
@@ -109,6 +118,11 @@ export default {
 
       this.showAlert = false;
     },
+    setItemSeleccionado(item) {
+      this.itemSeleccionado = item
+
+      this.$bvModal.show('modal-detalle-publicacion')
+    }
   },
   computed: {
     // postsList: function() {

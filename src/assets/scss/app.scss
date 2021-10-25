@@ -3,6 +3,8 @@
 @import 'node_modules/bootstrap/scss/bootstrap.scss';
 @import 'node_modules/bootstrap-vue/src/index.scss';
 
+@import './_utilities.scss';
+
 body {
   background-color: rgba($dark, .97) !important;
 
