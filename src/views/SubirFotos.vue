@@ -1,24 +1,14 @@
 <template>
-  <div class="container admin-fotos mt-5">
+  <div class="container admin-fotos mt-3">
     <div class="row justify-content-center">
       <div class="col-md-8 text-center">
-        <h1>Subir fotos</h1>
-        <h2 class="small font-weight-normal">Muéstrale al mundo tus mejores</h2>
+        <h1 class="admin-fotos_titulo text-white">Subir fotos</h1>
+        <h2 class="admin-fotos_subtitulo small font-weight-normal">Muéstrale al mundo tus mejores</h2>
       </div>
 
       <div class="col-md-9 mt-3">
-        <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions" @vdropzone-complete="complete($event)">
-          <div class="dropzone-custom-content">
-            <h3 class="dropzone-custom-title">Drag and drop to upload content!</h3>
-            <div class="subtitle">...or click to select a file from your computer</div>
-          </div>
+        <vue-dropzone ref="myVueDropzone" id="dropzone" class="dropzone-main" :options="dropzoneOptions" @vdropzone-complete="complete($event)">
         </vue-dropzone>
-      </div>
-    </div>
-
-    <div class="row mt-5">
-      <div class="col-md-4 mb-5" v-for="item in items" :key="item.id">
-        <img :src="item.url" :alt="item.description" class="w-100">
       </div>
     </div>
   </div>
@@ -43,37 +33,21 @@
         dropzoneOptions: {
           url: 'https://httpbin.org/post',
           thumbnailWidth: 150,
-          dictDefaultMessage: "<p>Arrastre o haga click aquí, para mostrarle al mundo tus mejores fotos.</p>"
+          dictDefaultMessage: `<div>
+              <span class="icono">
+                <i class="far fa-images"></i>
+              </span>
+              <p class="dropzone-main_descripcion">Arrastre o haga click aquí, para empezar a publicar.</p>
+            </div>
+          `
         },
         items: []
       }
-    },
-    mounted() {
-      setTimeout(() => {
-        this.getItems()
-      }, 1000)
     },
     components: {
       vueDropzone
     },
     methods: {
-      getItems() {
-        db.collection("posts")
-          .where("userId", "==", this.user.id)
-          .orderBy("createdAt", "desc")
-          .onSnapshot((querySnapshot) => {
-              let list = []
-
-              querySnapshot.forEach((doc) => {
-                let data = doc.data()
-                    data.id = doc.id
-
-                list.push(data)
-              });
-
-              this.items = list
-          });
-      },
       complete(file) {
         let fileName = `${uuidv1()}-${file.name}`,
             refPath = `images/${this.user.id}/${fileName}`
@@ -114,3 +88,70 @@
     }
   }
 </script>
+
+<style lang="scss">
+.admin-fotos {
+  &_titulo {
+    font-size: 6vw;
+
+    @media (min-width: 768px) {
+      font-size: 2em;
+    }
+  }
+
+  &_subtitulo {
+    color: rgba(white, .8);
+  }
+
+  #dropzone.dropzone-main {
+    min-height: 400px;
+
+    background-color: $dark;
+    color: white;
+
+    border: 2px dashed rgba($success, .8);
+
+    p.dropzone-main_descripcion {
+      color: rgba(white, .8);
+
+      transition: color .5s;
+    }
+
+    &:hover {
+      border: 2px dashed $success;
+
+      p.dropzone-main_descripcion {
+        color: white;
+      }
+
+      .icono {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  .dz-default.dz-message {
+    min-height: 350px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    span {
+      display: block;
+    }
+
+    .icono {
+      font-size: 2em;
+
+      display: inline-block;
+
+      transition: transform .7s;
+
+      @media (min-width: 768px) {
+        font-size: 3em;
+      }
+    }
+  }
+}
+</style>

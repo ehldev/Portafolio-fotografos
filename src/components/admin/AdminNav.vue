@@ -1,24 +1,23 @@
 <template>
-  <section class="admin-nav">
+  <section class="admin-nav h-100">
     <div class="d-flex flex-column justify-content-center align-items-center text-center pt-5">
       <div class="admin-nav__user-image" v-bind:style="userImage"> 
       </div>
 
-      <span class="font-weight-bold d-inline-block mt-3">@ehldev</span>
+      <div class="py-3 px-4">
+        <span class="text-white font-weight-bold d-inline-block mt-3">@ehldev</span>
+
+        <p class="text-muted small">
+          Lorem ipsum dolor sit amet consectetur adipisicing, elit. Architecto, nihil nobis mollitia eius. Iusto, debitis.
+        </p>
+      </div>
     </div>
 
-    <div class="mt-4">
-      <b-card no-body>
-        <b-tabs pills card vertical nav-wrapper-class="w-50">
-          <b-tab title="Explorar" active @click="$router.push('/')"></b-tab>
-
-          <b-tab title="Portafolio" @click="$router.push({name: 'admin'})"></b-tab>
-
-          <b-tab title="Fotos" @click="$router.push({name: 'admin-fotos'})"></b-tab>
-
-          <b-tab :title="loading ? 'Saliendo...' : 'Salir'" @click.prevent="logoutAction()"></b-tab>
-        </b-tabs>
-      </b-card>
+    <div class="text-left mt-4 py-3 px-4">
+      <router-link to="/" class="btn btn-light btn-block">Explorar</router-link>
+      <router-link :to="{name: 'admin'}" class="btn btn-light btn-block">Portafolio</router-link>
+      <router-link :to="{name: 'admin-fotos'}" class="btn btn-light btn-block">Fotos</router-link>
+      <button type="button" class="btn btn-danger btn-block text-white" @click="logoutAction()">Salir</button>
     </div>
   </section>
 </template>
@@ -65,9 +64,17 @@
 .admin-nav {
   width: 25%;
 
+  background-color: rgba($dark, .97) !important;
+
   position: fixed;
   top: 0;
   left: 0;
+
+  transition: background-color .5s;
+
+  &:hover {
+    background-color: $dark !important;
+  }
 
   &__user-image {
     width: 60%;

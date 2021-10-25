@@ -30,7 +30,7 @@ const routes = [
 	{
 		path: '/admin/fotos',
 		name: 'admin-fotos',
-		component: () => import('../views/Fotos.vue'),
+		component: () => import('../views/SubirFotos.vue'),
 		meta: {
 			requireAuth: true
 		}

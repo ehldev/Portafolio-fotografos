@@ -2,36 +2,36 @@
   <div class="index">
     <Welcome v-if="!user" />
 
-    <Posts :items="items" v-else />
+    <Posts titulo="Explorar" :items="items" v-else />
   </div>
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from "vuex";
 
-import Welcome from '@/components/index/Welcome'
-import Posts from '@/components/index/Posts'
+import Welcome from "@/components/index/Welcome";
+import Posts from "@/components/index/Posts";
 
 export default {
-  name: 'Index',
+  name: "Index",
   data() {
     return {
-      tipoFormulario: 'REGISTRO'
-    }
+      tipoFormulario: "REGISTRO",
+    };
   },
   components: {
     Welcome,
-    Posts
+    Posts,
   },
   computed: {
     ...mapState({
-        user: state => state.auth.user
+      user: (state) => state.auth.user,
     }),
     ...mapGetters({
-      items: 'posts/items'
-    })
-  }
-}
+      items: "posts/items",
+    }),
+  },
+};
 </script>
 
 <style lang="scss">
