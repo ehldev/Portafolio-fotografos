@@ -18,6 +18,11 @@ Vue.config.productionTip = false
 import VueSmoothScroll from 'vue2-smooth-scroll'
 Vue.use(VueSmoothScroll)
 
+// https://github.com/ankurk91/vue-toast-notification
+import VueToast from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+Vue.use(VueToast)
+
 // Primero se verifica si existe un usuario logueado para luego mostrar la app
 store.dispatch('auth/authState')
   .then(() => {

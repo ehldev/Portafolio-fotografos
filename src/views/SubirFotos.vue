@@ -7,7 +7,7 @@
       </div>
 
       <div class="col-md-9 mt-3">
-        <vue-dropzone ref="myVueDropzone" id="dropzone" class="dropzone-main" :options="dropzoneOptions" @vdropzone-complete="complete($event)">
+        <vue-dropzone ref="dropzone" id="dropzone" class="dropzone-main" :options="dropzoneOptions" @vdropzone-complete="complete($event)">
         </vue-dropzone>
       </div>
     </div>
@@ -48,37 +48,47 @@
       vueDropzone
     },
     methods: {
-      complete(file) {
+      async complete(file) {
         let fileName = `${uuidv1()}-${file.name}`,
             refPath = `images/${this.user.id}/${fileName}`
         
         let imageRef = storageRef.child(refPath)
 
-        imageRef.put(file)
-          .then(snapshot => {
-            snapshot.ref.getDownloadURL()
-              .then(url => {
-                this.savePost({
-                  imageRef: refPath,
-                  url
-                })
-              })
+        await imageRef.put(file)
+          .then(async (snapshot) => {
+            let url = await snapshot.ref.getDownloadURL()
+            
+            this.savePost({
+              imageRef: refPath,
+              url
+            })
+
+            this.$refs.dropzone.removeFile(file)
+
+            this.$toast.open({
+              message: 'Imagen publicada',
+              type: 'success',
+              position: 'top-right'
+            });
           })
       },
-      savePost({ imageRef, url }) {
-        db.collection("posts").add({
-            userId: this.user.id,
-            imageRef,
-            url,
-            description: '',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        })
-        .then((docRef) => {
-            console.log("Document written with ID: ", docRef.id);
-        })
-        .catch((error) => {
-            console.error("Error adding document: ", error);
-        })
+      async savePost({ imageRef, url }) {
+        try {
+          await db.collection("posts").add({
+              userId: this.user.id,
+              imageRef,
+              url,
+              description: '',
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          })
+
+        } catch(error) {
+          this.$toast.open({
+            message: 'Ocurrió un error al subir la imagen.',
+            type: 'error',
+            position: 'top-right'
+          });
+        }
       }
     },
     computed: {
@@ -104,7 +114,7 @@
   }
 
   #dropzone.dropzone-main {
-    min-height: 400px;
+    min-height: 150px;
 
     background-color: $dark;
     color: white;
@@ -131,7 +141,7 @@
   }
 
   .dz-default.dz-message {
-    min-height: 350px;
+    min-height: 150px;
 
     display: flex;
     justify-content: center;
