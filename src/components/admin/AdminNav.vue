@@ -1,25 +1,34 @@
 <template>
-  <section class="admin-nav h-100">
-    <div class="d-flex flex-column justify-content-center align-items-center text-center pt-5">
-      <div class="admin-nav__user-image" v-bind:style="userImage"> 
+  <div>
+    <section class="admin-nav" :class="{'admin-nav--active': showNav}">
+      <div class="d-flex flex-column justify-content-center align-items-center text-center pt-5">
+        <div class="admin-nav__user-image" v-bind:style="userImage"> 
+        </div>
+
+        <div class="py-3 px-4">
+          <span class="text-white font-weight-bold d-inline-block mt-3">@ehldev</span>
+
+          <p class="text-muted small">
+            Lorem ipsum dolor sit amet consectetur adipisicing, elit. Architecto, nihil nobis mollitia eius. Iusto, debitis.
+          </p>
+        </div>
       </div>
 
-      <div class="py-3 px-4">
-        <span class="text-white font-weight-bold d-inline-block mt-3">@ehldev</span>
+      <nav class="text-left mt-4 py-3 px-4">
+        <router-link to="/" class="btn btn-light btn-block">Explorar</router-link>
+        <router-link :to="{name: 'admin'}" class="btn btn-light btn-block">Portafolio</router-link>
+        <router-link :to="{name: 'admin-fotos'}" class="btn btn-light btn-block">Fotos</router-link>
+        <button type="button" class="btn btn-danger btn-block text-white" @click="logoutAction()">Salir</button>
+      </nav>
+    </section>
 
-        <p class="text-muted small">
-          Lorem ipsum dolor sit amet consectetur adipisicing, elit. Architecto, nihil nobis mollitia eius. Iusto, debitis.
-        </p>
-      </div>
-    </div>
+    <button class="hamburger hamburger--spin d-md-none" :class="{'is-active': showNav}" type="button" @click="showNav = !showNav">
+      <span class="hamburger-box">
+        <span class="hamburger-inner"></span>
+      </span>
+    </button>
 
-    <div class="text-left mt-4 py-3 px-4">
-      <router-link to="/" class="btn btn-light btn-block">Explorar</router-link>
-      <router-link :to="{name: 'admin'}" class="btn btn-light btn-block">Portafolio</router-link>
-      <router-link :to="{name: 'admin-fotos'}" class="btn btn-light btn-block">Fotos</router-link>
-      <button type="button" class="btn btn-danger btn-block text-white" @click="logoutAction()">Salir</button>
-    </div>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -28,7 +37,8 @@
   export default {
     data() {
       return {
-        loading: false
+        loading: false,
+        showNav: true
       }
     },
     computed: {
@@ -62,15 +72,28 @@
 
 <style lang="scss">
 .admin-nav {
-  width: 25%;
+  width: 75%;
+  height: 100vh;
 
   background-color: rgba($dark, .97) !important;
 
   position: fixed;
   top: 0;
-  left: 0;
+  left: -100%;
+  z-index: 100;
 
-  transition: background-color .5s;
+  @media (min-width: 768px) {
+    width: 25%;
+    height: 100%;
+
+    left: 0;
+  }
+
+  transition: .5s;
+
+  &--active {
+    left: 0;
+  }
 
   &:hover {
     background-color: $dark !important;
@@ -84,6 +107,21 @@
     background-position: center;
 
     border-radius: 50%;
+  }
+}
+
+.hamburger {
+  position: fixed;
+  top: 1rem;
+  right: .5rem;
+
+  &-inner {
+    background-color: white !important;
+
+    &::before,
+    &::after {
+      background-color: white !important;
+    }
   }
 }
 </style>
