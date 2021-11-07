@@ -36,7 +36,7 @@
           <div>
             <b-card-group columns>
               <post
-                v-for="(item, index) in posts"
+                v-for="(item, index) in items"
                 :key="index"
                 :item="item"
                 @selected="setItemSeleccionado($event)"
@@ -47,7 +47,7 @@
       </div>
 
       <div class="row" v-else>
-        <div class="col-md-6" v-for="(item, index) in posts" :key="index">
+        <div class="col-md-6" v-for="(item, index) in items" :key="index">
           <post :item="item" @selected="setItemSeleccionado($event)"></post>
         </div>
       </div>
@@ -75,7 +75,6 @@ import ModalDetail from '@/components/posts/ModalDetail'
 export default {
   data() {
     return {
-      posts: [],
       newPosts: [],
       showAlert: false,
       grid: "three",
@@ -83,9 +82,9 @@ export default {
     };
   },
   mounted() {
-    setTimeout(() => {
+    /* setTimeout(() => {
       this.setItems();
-    }, 1000);
+    }, 1000); */
   },
   props: {
     titulo: String,
@@ -96,17 +95,17 @@ export default {
     ModalDetail
   },
   watch: {
-    items: function (val) {
+    /* items: function (val) {
       this.newPosts = val;
 
       if (this.posts.length && this.newPosts.length > this.posts.length) {
         this.showAlert = true;
       }
-    },
+    }, */
   },
   methods: {
     setItems() {
-      this.posts = JSON.parse(JSON.stringify(this.items));
+      this.posts = this.items;
 
       const myEl = document.getElementById("posts-container");
 

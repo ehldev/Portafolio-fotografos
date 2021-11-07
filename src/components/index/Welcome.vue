@@ -10,8 +10,8 @@
           <div class="row h-100 justify-content-center align-items-center">
             <div class="col-md-8">
               <div class="text-center">
-                <h1 class="home__title font-weight-bold my-0">Muéstrale al mundo</h1>
-                <h2 class="home__subtitle mt-1">Tus mejores fotos</h2>
+                <h1 class="home__title text-white font-weight-bold my-0">Muéstrale al mundo</h1>
+                <h2 class="home__subtitle text-white font-weight-normal mt-2">Tus mejores fotos</h2>
 
                 <section class="text-left">
                   <FormRegistration v-if="tipoFormulario === 'REGISTRO'">

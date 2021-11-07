@@ -1,4 +1,7 @@
+import firebase from 'firebase'
 import { firebaseAuth, db, firebaseTimestamp } from "@/firebase/firebaseConfig";
+import { doc, deleteDoc } from "firebase/firestore";
+const storageRef = firebase.storage().ref();
 
 export const posts = {
   namespaced: true,
@@ -25,11 +28,22 @@ export const posts = {
             list.push(data);
           });
 
-          // this.items = list
-
           commit("SET_POSTS", list);
         });
     },
+    async deletePost({commit}, item) {
+      let refToDelete = storageRef.child(item.imageRef)
+
+      await refToDelete.delete()
+
+      await db.collection("posts").doc(item.id).delete()
+
+      /* db.collection("posts").doc(item.id).delete().then(() => {
+          console.log("Document successfully deleted!");
+      }).catch((error) => {
+          console.error("Error removing document: ", error);
+      }) */
+    }
   },
   getters: {
     items(state) {
