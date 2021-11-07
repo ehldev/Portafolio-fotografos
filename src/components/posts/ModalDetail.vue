@@ -58,7 +58,7 @@
 		    			</section>
 		    		</section>
 
-	    			<section class="mt-3 text-right">
+	    			<section class="mt-3 text-right" v-if="usuarioPermitido">
 	    				<button type="button" class="btn btn-danger text-white" @click="confirmarEliminacion = !confirmarEliminacion">{{ confirmarEliminacion ? 'No eliminar' : 'Eliminar' }}</button>
 
 	    				<p class="small mt-3 mb-1" v-if="confirmarEliminacion">
@@ -75,7 +75,7 @@
 
 <script>
 
-	import { mapActions } from 'vuex'
+	import { mapGetters, mapActions } from 'vuex'
 
 	export default {
 		data() {
@@ -93,6 +93,10 @@
 				getPosts: 'posts/getPosts'
 			}),
 			async eliminar() {
+				if(!usuarioPermitido) {
+					return
+				}
+				
 				await this.deletePost(this.item)
 				// Aquí se actualizaría el estado con una nueva petición pero gracias a firestore ya no es necesario
 				// await this.getPosts()
@@ -106,6 +110,22 @@
 	              type: 'success',
 	              position: 'top-right'
 	            });
+			}
+		},
+		computed: {
+			...mapGetters({
+				user: 'auth/user'
+			}),
+			usuarioPermitido() {
+				let status = false
+
+				if(this.user) {
+					if(this.item.userId === this.user.id) {
+						status = true
+					}
+				}
+
+				return status
 			}
 		}
 	}

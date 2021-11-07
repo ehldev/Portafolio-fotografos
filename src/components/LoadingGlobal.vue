@@ -1,6 +1,6 @@
 <template>
 	<section class="loading-global d-flex justify-content-center align-items-center">
-		<h1>Loading...</h1>
+		<h1 class="text-white">Loading...</h1>
 	</section>
 </template>
 
