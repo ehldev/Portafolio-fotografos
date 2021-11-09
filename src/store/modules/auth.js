@@ -20,15 +20,13 @@ export const auth = {
 	},
 
 	actions: {
-		registration({commit, dispatch}, {name, email, password}) {
-			return new Promise((resolve, reject) => {
-				firebaseAuth.createUserWithEmailAndPassword(email, password)
-				  	.then((userCredential) => {
-				    	var user = userCredential.user;
+		async registration({commit, dispatch}, {name, email, password}) {
+			const data = await firebaseAuth.createUserWithEmailAndPassword(email, password)
 
-				    	let username = generateUsername(email)
+			let user = data.user,
+				username = generateUsername(email)
 
-				      	db.collection("users").add({
+			const docRef = await db.collection("users").add({
 				          userId: user.uid,
 				          name,
 				          username,
@@ -36,23 +34,11 @@ export const auth = {
 				          photo: '',
 				          createdAt: firebaseTimestamp
 				      	})
-				      	.then((docRef) => {
-				          dispatch('login', {email, password})
-				          	.then(() => {
-				          		dispatch('sendEmailVerify')
-				          			.then(() => resolve())
-				          	})
-				      	})
-				      	.catch((error) => {
-				          console.error("Error adding document: ", error);
-				      	})
-				  	})
-				  	.catch((error) => {
-				    	reject(error)
-					});
-			})
+
+			dispatch('login', {email, password})
+			dispatch('sendEmailVerify')
 		},
-		login({commit}, credentials) {
+		login({commit, dispatch}, credentials) {
 			return new Promise((resolve, reject) => {
 				firebaseAuth.signInWithEmailAndPassword(credentials.email, credentials.password)
 				  .then((userCredential) => {

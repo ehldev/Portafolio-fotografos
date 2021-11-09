@@ -1,5 +1,11 @@
 <template>
   <div class="container admin-fotos mt-3">
+    <div class="row">
+      <div class="col-md-12">
+        <VerificarCorreo />
+      </div>
+    </div>
+
     <div class="row justify-content-center">
       <div class="col-md-8 text-center">
         <h1 class="admin-fotos_titulo text-white">Subir fotos</h1>
@@ -27,6 +33,8 @@
   const storageRef = firebase.storage().ref();
   const db = firebase.firestore()
 
+  import VerificarCorreo from '@/components/general/VerificarCorreo'
+
   export default {
     data() {
       return {
@@ -45,6 +53,7 @@
       }
     },
     components: {
+      VerificarCorreo,
       vueDropzone
     },
     methods: {

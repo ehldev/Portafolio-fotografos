@@ -2,17 +2,7 @@
   <div class="container admin">
     <div class="row justify-content-center">
       <div class="col-md-12">
-        <b-alert
-          class="small"
-          variant="info"
-          show
-          v-if="!userData.emailVerified"
-        >
-          Su correo aún no ha sido verificado.
-          <br />
-          Por favor revise su bandeja de entrada para poder gozar de todas las
-          funcionalidades de la app.
-        </b-alert>
+        <VerificarCorreo />
       </div>
 
       <div class="col-md-12">
@@ -36,6 +26,8 @@ import Posts from "@/components/index/Posts";
 const storageRef = firebase.storage().ref();
 const db = firebase.firestore();
 
+import VerificarCorreo from '@/components/general/VerificarCorreo'
+
 export default {
   data() {
     return {
@@ -46,7 +38,8 @@ export default {
     this.getItems();
   },
   components: {
-    Posts,
+    VerificarCorreo,
+    Posts
   },
   methods: {
     getItems() {
@@ -65,15 +58,16 @@ export default {
 
           this.items = list;
         });
-    },
+    }
   },
   computed: {
     ...mapState({
       userData: (state) => state.auth.user,
     }),
+
     ...mapGetters({
       user: "auth/user",
-    }),
+    })
   },
 };
 </script>
