@@ -32,17 +32,22 @@ export const posts = {
         });
     },
     async deletePost({commit}, item) {
-      let refToDelete = storageRef.child(item.imageRef)
+      try {
+        let refToDelete = storageRef.child(item.imageRef)
 
-      await refToDelete.delete()
+        await refToDelete.delete()
 
-      await db.collection("posts").doc(item.id).delete()
+        await db.collection("posts").doc(item.id).delete()
+      } catch(error) {
+        console.log(error)
+      }
+    },
+    async updateDescription({commit}, data) {
+      let ref = db.collection("posts").doc(data.id)
 
-      /* db.collection("posts").doc(item.id).delete().then(() => {
-          console.log("Document successfully deleted!");
-      }).catch((error) => {
-          console.error("Error removing document: ", error);
-      }) */
+      await ref.update({
+          descripcion: data.descripcion
+      })
     }
   },
   getters: {

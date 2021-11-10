@@ -29,29 +29,25 @@
 		    			</div>
 
 		    			<!-- Descripción -->
-		    			<p class="text-muted" v-if="item.descripcion">
-		    				{{ item.descripcion }}
-		    			</p>
+		    			<p class="text-muted" v-if="!edit">
+		    				{{ item.descripcion ? item.descripcion : '' }}
 
-		    			<p class="text-muted my-0" v-if="!item.descripcion && !edit">
-		    				Sin descripción
-
-		    				<span class="pointer" v-b-tooltip.hover title="Editar" v-if="!item.descripcion" @click="edit = true">
+		    				<span class="pointer" v-b-tooltip.hover title="Editar" @click="editar()" v-if="usuarioPermitido">
 		    					<i class="fas fa-edit"></i>
 		    				</span>
 		    			</p>
 
-		    			<section v-if="edit">
-		    				<textarea placeholder="Actualizando descripción" class="form-control"></textarea>
+		    			<section v-else>
+		    				<textarea placeholder="Actualizando descripción" class="form-control" v-model="item.descripcion"></textarea>
 
 		    				<div class="d-flex justify-content-end align-items-center">
-		    					<p class="text-danger pointer my-0" @click="edit = false">
+		    					<p class="text-danger pointer my-0" @click="cancelarActualizacion()">
 			    					Cancelar
 			    					<i class="fas fa-times"></i>
 			    				</p>
 
-		    					<a href="" class="text-success ml-3">
-		    						Actualizar
+		    					<a href="" class="text-success ml-3" @click.prevent="actualizarDescripcion()">
+		    						{{ actualizando ? 'Actualizando...' : 'Actualizar' }}
 		    						<i class="fas fa-check"></i>
 		    					</a>
 		    				</div>
@@ -81,7 +77,9 @@
 		data() {
 			return {
 				edit: false,
-				confirmarEliminacion: false
+				confirmarEliminacion: false,
+				actualizando: false,
+				borradorDescripcion: null
 			}
 		},
 		props: {
@@ -90,10 +88,11 @@
 		methods: {
 			...mapActions({
 				deletePost: 'posts/deletePost',
-				getPosts: 'posts/getPosts'
+				getPosts: 'posts/getPosts',
+				updateDescription: 'posts/updateDescription'
 			}),
 			async eliminar() {
-				if(!usuarioPermitido) {
+				if(!this.usuarioPermitido) {
 					return
 				}
 				
@@ -110,6 +109,37 @@
 	              type: 'success',
 	              position: 'top-right'
 	            });
+			},
+			async actualizarDescripcion() {
+				if(!this.usuarioPermitido) {
+					return
+				}
+
+				this.actualizando = true
+
+				let data = {
+					id: this.item.id,
+					descripcion: this.item.descripcion
+				}
+
+				await this.updateDescription(data)
+
+				this.actualizando = false
+				this.edit = false
+
+				this.$toast.open({
+	              message: 'Descripción actualizada',
+	              type: 'success',
+	              position: 'top-right'
+	            })
+			},
+			editar() {
+				this.borradorDescripcion = `${this.item.descripcion}`
+				this.edit = true
+			},
+			cancelarActualizacion() {
+				this.edit = false
+				this.item.descripcion = this.borradorDescripcion
 			}
 		},
 		computed: {
