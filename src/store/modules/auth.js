@@ -32,7 +32,8 @@ export const auth = {
 				          username,
 				          email,
 				          photo: '',
-				          createdAt: firebaseTimestamp
+				          createdAt: firebaseTimestamp,
+				          description: ''
 				      	})
 
 			dispatch('login', {email, password})
@@ -110,7 +111,7 @@ export const auth = {
 		  		.get()
 			    .then((querySnapshot) => {
 			        querySnapshot.forEach((doc) => {
-			            let { name, username, photo } = doc.data()
+			            let { name, username, photo, description } = doc.data()
 
 					    var userData = {
 					    	id: data.uid,
@@ -118,7 +119,8 @@ export const auth = {
 					    	username,
 					    	photo,
 					    	email: data.email,
-					    	emailVerified: data.emailVerified
+					    	emailVerified: data.emailVerified,
+					    	description
 					    }
 
 				    	commit('SET_USER', userData)

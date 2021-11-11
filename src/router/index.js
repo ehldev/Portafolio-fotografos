@@ -20,9 +20,9 @@ const routes = [
 		component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
 	},
 	{
-		path: '/admin',
-		name: 'admin',
-		component: () => import('../views/Admin.vue'),
+		path: '/portafolio',
+		name: 'portafolio',
+		component: () => import('../views/Portafolio.vue'),
 		meta: {
 			requireAuth: true
 		}
@@ -39,6 +39,14 @@ const routes = [
 		path: '/:username',
 		name: 'user-profile',
 		component: () => import('../views/Profile.vue'),
+		meta: {
+			requireAuth: true
+		}
+	},
+	{
+		path: '/editar-datos',
+		name: 'editar-datos',
+		component: () => import('../views/EditarDatos.vue'),
 		meta: {
 			requireAuth: true
 		}

@@ -80,7 +80,7 @@ export default {
             .then(() => {
               this.loading = false
 
-              this.$router.push('/admin')
+              this.$router.push('/')
             })
             .catch(({ code }) => {
               this.error = this.errors.find(e => e.code === code).message

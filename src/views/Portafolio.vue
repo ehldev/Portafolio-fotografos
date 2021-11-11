@@ -6,7 +6,9 @@
       </div>
 
       <div class="col-md-12">
-        <Posts titulo="Mis fotos" :items="items" />
+        <Posts titulo="Mis fotos" :items="items" v-if="items.length" />
+
+        <p class="lead text-white mt-3" v-else>Aún no has publicado ninguna foto. Muéstrale al mundo tu trabajo.</p>
       </div>
     </div>
 
@@ -17,7 +19,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 
 import firebase from "firebase";
 
@@ -61,10 +63,6 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      userData: (state) => state.auth.user,
-    }),
-
     ...mapGetters({
       user: "auth/user",
     })

@@ -6,13 +6,26 @@
       </div>
     </div>
 
-    <div class="row justify-content-center">
-      <div class="col-md-8 text-center">
-        <h1 class="admin-fotos_titulo text-white">Subir fotos</h1>
-        <h2 class="admin-fotos_subtitulo small font-weight-normal">Muéstrale al mundo tus mejores</h2>
+    <div class="row">
+      <div class="col-md-12">
+        <h1 class="admin-fotos_titulo text-white">Editar datos</h1>
       </div>
 
-      <div class="col-md-9 mt-3">
+      <div class="col-md-8 mt-3">
+        <form action="">
+          <div class="form-group">
+            <label for="name" class="text-white">Nombres y apellidos</label>
+            <input type="text" id="name" class="form-control mt-1" v-model="name">
+          </div>
+
+          <div class="form-group">
+            <label for="description" class="text-white">Descripción</label>
+            <textarea id="description" class="form-control" v-model="description"></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-md-4">
         <vue-dropzone ref="dropzone" id="dropzone" class="dropzone-main" :options="dropzoneOptions" @vdropzone-complete="complete($event)">
         </vue-dropzone>
       </div>
@@ -45,12 +58,20 @@
               <span class="icono">
                 <i class="far fa-images"></i>
               </span>
-              <p class="dropzone-main_descripcion">Arrastre o haga click aquí, para empezar a publicar.</p>
+              <p class="dropzone-main_descripcion">Arrastre o haga click aquí, para cambiar su foto de perfil.</p>
             </div>
           `
         },
-        items: []
+        items: [],
+        name: '',
+        description: ''
       }
+    },
+    mounted() {
+      setTimeout(() => {
+        this.name = `${this.user.name}`
+        this.description = `${this.user.description}`
+      }, 500)
     },
     components: {
       VerificarCorreo,

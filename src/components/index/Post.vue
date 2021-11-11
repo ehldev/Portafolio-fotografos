@@ -3,7 +3,7 @@
     <b-card
       :img-src="item.url"
       img-alt="Image"
-      class="main-card mb-4 border-0 bg-dark pointer"
+      class="main-card mb-4 border-0 bg-dark pointer animate__animated animate__fadeIn"
       no-body
       @click="seleccionar()"
     >

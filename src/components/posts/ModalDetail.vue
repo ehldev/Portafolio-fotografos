@@ -3,39 +3,33 @@
 	    <section class="container modal-detalle" v-if="item">
 	    	<div class="row justify-content-between">
 	    		<div class="col-md-6 px-0">
-	    			<div v-bind:style="{backgroundImage: 'url(' + item.url + ')'}" class="modal-detalle_imagen w-100"></div>
+	    			<div v-bind:style="{backgroundImage: 'url(' + item.url + ')'}" class="modal-detalle_imagen w-100">
+	    			</div>
 	    		</div>
 
 	    		<div class="col-md-6 d-flex flex-column justify-content-between p-4 pr-md-5">
 	    			<section>
-	    				<p class="small bg-light d-inline-block my-0 p-1">
-		    				<span>
-		    					5 Visualizaciones
-		    				</span>
-		    			</p>
-
-		    			<div class="mt-2">
+		    			<!-- <div class="mt-2">
 		    				<p class="small my-0">
-			    				<span v-b-tooltip.hover title="Fecha de publicación">
-			    					<i class="fas fa-calendar-alt"></i>
-			    				</span>
-			    				<span class="d-inline-block ml-2">{{ new Date | moment("dddd, MMMM Do YYYY, h:mm:ss a") }}</span>
+			    				<span class="d-inline-block">{{ new Date | moment("LLL") }}</span>
 			    			</p>
 
 		    				<a :href="item.url" target="_blank" class="d-inline-block my-3">
 			    				URL pública
 			    				<i class="fas fa-external-link-alt"></i>
 			    			</a>
-		    			</div>
+		    			</div> -->
 
 		    			<!-- Descripción -->
-		    			<p class="text-muted" v-if="!edit">
-		    				{{ item.descripcion ? item.descripcion : '' }}
+			    		<div v-if="!edit">
+			    			<p class="text-muted bg-light p-1" v-if="item.descripcion">
+			    				{{ item.descripcion ? item.descripcion : 'Añadir descripción' }}
+			    			</p>
 
-		    				<span class="pointer" v-b-tooltip.hover title="Editar" @click="editar()" v-if="usuarioPermitido">
+			    			<span class="pointer text-primary" v-b-tooltip.hover title="Descripción" @click="editar()" v-if="usuarioPermitido">
 		    					<i class="fas fa-edit"></i>
 		    				</span>
-		    			</p>
+			    		</div>
 
 		    			<section v-else>
 		    				<textarea placeholder="Actualizando descripción" class="form-control" v-model="item.descripcion"></textarea>
