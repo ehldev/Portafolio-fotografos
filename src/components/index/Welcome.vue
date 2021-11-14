@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 import FormRegistration  from '@/components/auth/FormRegistration'
 import FormLogin  from '@/components/auth/FormLogin'
@@ -62,8 +62,8 @@ export default {
     FormResetPassword
   },
   computed: {
-    ...mapState({
-        user: state => state.auth.user
+    ...mapGetters({
+      user: 'auth/user'
     })
   }
 }

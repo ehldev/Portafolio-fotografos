@@ -68,16 +68,17 @@
       }
     },
     mounted() {
-      setTimeout(() => {
-        this.name = `${this.user.name}`
-        this.description = `${this.user.description}`
-      }, 500)
+      this.assignData()
     },
     components: {
       VerificarCorreo,
       vueDropzone
     },
     methods: {
+      async assignData() {
+        this.name = `${this.user.name}`
+        this.description = this.user.description ? `${this.user.description}` : ''
+      },
       async complete(file) {
         let fileName = `${uuidv1()}-${file.name}`,
             refPath = `images/${this.user.id}/${fileName}`
@@ -102,7 +103,7 @@
             });
           })
       },
-      async savePost({ imageRef, url }) {
+      async update({ imageRef, url }) {
         try {
           await db.collection("posts").add({
               userId: this.user.id,

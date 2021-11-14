@@ -22,7 +22,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
+  import { mapGetters } from 'vuex'
 
   export default {
     data() {
@@ -30,12 +30,9 @@
 
       }
     },
-    components: {
-      AdminNav
-    },
     computed: {
-      ...mapState({
-        user: state => state.auth.user
+      ...mapGetters({
+        user: 'auth/user'
       })
     }
   }

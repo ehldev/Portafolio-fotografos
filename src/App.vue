@@ -38,12 +38,13 @@ export default {
       loading: true,
     };
   },
-  async mounted() {
-    await this.authState();
+  async created() {
+    this.authState()
+      .then(async () => {
+        await this.getPosts();
 
-    await this.getPosts();
-
-    this.loading = false;
+        this.loading = false;
+      })
   },
   components: {
     LoadingGlobal,

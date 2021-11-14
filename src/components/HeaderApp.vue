@@ -7,7 +7,7 @@
 </template>
 
 <script>
-	import { mapState, mapActions } from 'vuex'
+	import { mapGetters, mapActions } from 'vuex'
 
 	export default {
 		data() {
@@ -27,8 +27,8 @@
 			}
 		},
 		computed: {
-			...mapState({
-				user: state => state.auth.user
+			...mapGetters({
+				user: 'auth/user'
 			})
 		}
 	}

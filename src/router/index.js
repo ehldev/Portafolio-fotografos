@@ -36,6 +36,14 @@ const routes = [
 		}
 	},
 	{
+		path: '/editar-datos',
+		name: 'editar-datos',
+		component: () => import('../views/EditarDatos.vue'),
+		meta: {
+			requireAuth: true
+		}
+	},
+	{
 		path: '/:username',
 		name: 'user-profile',
 		component: () => import('../views/Profile.vue'),
@@ -43,14 +51,6 @@ const routes = [
 			requireAuth: true
 		}
 	},
-	{
-		path: '/editar-datos',
-		name: 'editar-datos',
-		component: () => import('../views/EditarDatos.vue'),
-		meta: {
-			requireAuth: true
-		}
-	}
 ]
 
 const router = new VueRouter({
@@ -59,15 +59,15 @@ const router = new VueRouter({
 	routes
 })
 
-router.beforeEach((to, from, next) => {
-	let requireAuth = to.meta.requireAuth,
-		user = store.state.auth.user
+// router.beforeEach((to, from, next) => {
+// 	let requireAuth = to.meta.requireAuth,
+// 		user = store.state.auth.user
 
-	if(requireAuth && !user) {
-		next('/')
-	} else {
-		next()
-	}
-})
+// 	if(requireAuth && !user) {
+// 		next('/')
+// 	} else {
+// 		next()
+// 	}
+// })
 
 export default router

@@ -39,27 +39,42 @@ export const auth = {
 			dispatch('login', {email, password})
 			dispatch('sendEmailVerify')
 		},
-		login({commit, dispatch}, credentials) {
-			return new Promise((resolve, reject) => {
-				firebaseAuth.signInWithEmailAndPassword(credentials.email, credentials.password)
-				  .then((userCredential) => {
+		async login({commit, dispatch}, credentials) {
 
-				  	let { uid, email, emailVerified } = userCredential.user
+			let userCredential = await firebaseAuth.signInWithEmailAndPassword(credentials.email, credentials.password)
 
-				    let dataForGetInfo = {
-				  		uid,
-				  		email,
-				  		emailVerified
-				  	}
+			let { uid, email, emailVerified } = userCredential.user
+
+		    let dataForGetInfo = {
+		  		uid,
+		  		email,
+		  		emailVerified
+		  	}
+		  	
+		  	await dispatch('getUserData', dataForGetInfo)
+
+
+			// return new Promise(async (resolve, reject) => {
+			// 	firebaseAuth.signInWithEmailAndPassword(credentials.email, credentials.password)
+			// 	  .then((userCredential) => {
+
+			// 	  	let { uid, email, emailVerified } = userCredential.user
+
+			// 	    let dataForGetInfo = {
+			// 	  		uid,
+			// 	  		email,
+			// 	  		emailVerified
+			// 	  	}
 
 				  	
-				  	dispatch('getUserData', dataForGetInfo)
-				  		.then(() => resolve())
-				  })
-				  .catch((error) => {
-				    reject(error)
-				  });
-			})
+			// 	  	await dispatch('getUserData', dataForGetInfo)
+
+			// 	  	resolve()
+			// 	  })
+			// 	  .catch((error) => {
+			// 	    reject(error)
+			// 	  });
+			// })
 		},
 		async logout({commit}) {
 			firebaseAuth.signOut()
@@ -107,28 +122,46 @@ export const auth = {
 			})
 		},
 		async getUserData({ commit }, data) {
-			await db.collection("users").where("userId", "==", data.uid)
-		  		.get()
-			    .then((querySnapshot) => {
-			        querySnapshot.forEach((doc) => {
-			            let { name, username, photo, description } = doc.data()
+			const querySnapshot = await db.collection("users").where("userId", "==", data.uid).get()
 
-					    var userData = {
-					    	id: data.uid,
-					    	name,
-					    	username,
-					    	photo,
-					    	email: data.email,
-					    	emailVerified: data.emailVerified,
-					    	description
-					    }
+			querySnapshot.forEach(doc => {
+				let { name, username, photo, description } = doc.data()
 
-				    	commit('SET_USER', userData)
-			        });
-			    })
-			    .catch((error) => {
-			        console.log("Error getting documents: ", error);
-			    });
+			    var userData = {
+			    	id: data.uid,
+			    	name,
+			    	username,
+			    	photo,
+			    	email: data.email,
+			    	emailVerified: data.emailVerified,
+			    	description
+			    }
+
+		    	commit('SET_USER', userData)
+			})
+
+			// await db.collection("users").where("userId", "==", data.uid)
+		 //  		.get()
+			//     .then((querySnapshot) => {
+			//         querySnapshot.forEach((doc) => {
+			//             let { name, username, photo, description } = doc.data()
+
+			// 		    var userData = {
+			// 		    	id: data.uid,
+			// 		    	name,
+			// 		    	username,
+			// 		    	photo,
+			// 		    	email: data.email,
+			// 		    	emailVerified: data.emailVerified,
+			// 		    	description
+			// 		    }
+
+			// 	    	commit('SET_USER', userData)
+			//         });
+			//     })
+			//     .catch((error) => {
+			//         console.log("Error getting documents: ", error);
+			//     });
 		}
 	},
 	getters: {
