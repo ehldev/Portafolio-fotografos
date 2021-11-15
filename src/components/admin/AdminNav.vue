@@ -9,8 +9,8 @@
           <h1 class="admin-nav__titulo text-white mb-0">{{ user.name }}</h1>
           <span class="small text-white font-weight-bold d-inline-block">@{{ user.username }}</span>
 
-          <p class="text-muted small text-left px-2">
-            Lorem ipsum dolor sit amet consectetur adipisicing, elit. Architecto, nihil nobis mollitia eius. Iusto, debitis.
+          <p class="text-muted small text-left mt-2 px-2">
+            {{ user.description }}
           </p>
         </div>
       </div>

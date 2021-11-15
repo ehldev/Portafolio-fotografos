@@ -125,6 +125,7 @@ export const auth = {
 			const querySnapshot = await db.collection("users").where("userId", "==", data.uid).get()
 
 			querySnapshot.forEach(doc => {
+
 				let { name, username, photo, description } = doc.data()
 
 			    var userData = {
@@ -134,7 +135,8 @@ export const auth = {
 			    	photo,
 			    	email: data.email,
 			    	emailVerified: data.emailVerified,
-			    	description
+			    	description,
+			    	docId: doc.id
 			    }
 
 		    	commit('SET_USER', userData)

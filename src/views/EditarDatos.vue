@@ -1,5 +1,5 @@
 <template>
-  <div class="container admin-fotos mt-3">
+  <div class="container admin-fotos editar-datos mt-3">
     <div class="row">
       <div class="col-md-12">
         <VerificarCorreo />
@@ -12,22 +12,36 @@
       </div>
 
       <div class="col-md-8 mt-3">
-        <form action="">
+        <form @submit.prevent="verifyUpdate()">
           <div class="form-group">
             <label for="name" class="text-white">Nombres y apellidos</label>
             <input type="text" id="name" class="form-control mt-1" v-model="name">
           </div>
 
           <div class="form-group">
-            <label for="description" class="text-white">Descripción</label>
+            <label for="description" class="text-white">Sobre mí</label>
             <textarea id="description" class="form-control" v-model="description"></textarea>
+          </div>
+
+          <div class="form-group text-right mt-4">
+            <button type="submit" :disabled="loading || !validateForm" class="btn btn-primary px-5">{{ loading ? 'Actualizando' : 'Actualizar' }}</button>
           </div>
         </form>
       </div>
 
       <div class="col-md-4">
-        <vue-dropzone ref="dropzone" id="dropzone" class="dropzone-main" :options="dropzoneOptions" @vdropzone-complete="complete($event)">
-        </vue-dropzone>
+        <section v-if="!file">
+          <vue-dropzone ref="dropzone" id="dropzone" class="dropzone-main" :options="dropzoneOptions" @vdropzone-drop="setUploadFileLoading" @vdropzone-file-added="setUploadFileLoading" @vdropzone-complete="setFile($event)">
+          </vue-dropzone>
+        </section>
+
+        <section v-else>
+          <img :src="previewFile" alt="Nueva foto de perfil" class="preview">
+
+          <div class="text-right">
+            <a href="" class="text-danger d-inline-block mt-3" @click.prevent="removeFile()" v-if="!loading">Cancelar</a>
+          </div>
+        </section>
       </div>
     </div>
   </div>
@@ -38,7 +52,7 @@
 
   import { v1 as uuidv1 } from 'uuid'
 
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
 
   import vueDropzone from 'vue2-dropzone'
   import 'vue2-dropzone/dist/vue2Dropzone.min.css'
@@ -64,7 +78,11 @@
         },
         items: [],
         name: '',
-        description: ''
+        description: '',
+        file: null,
+        previewFile: null,
+        loadingUploadFile: false,
+        loading: false
       }
     },
     mounted() {
@@ -75,47 +93,90 @@
       vueDropzone
     },
     methods: {
+      ...mapActions({
+        authState: 'auth/authState'
+      }),
       async assignData() {
         this.name = `${this.user.name}`
         this.description = this.user.description ? `${this.user.description}` : ''
       },
-      async complete(file) {
-        let fileName = `${uuidv1()}-${file.name}`,
-            refPath = `images/${this.user.id}/${fileName}`
+      setUploadFileLoading() {
+        this.loadingUploadFile = true
+      },
+      setFile(file) {
+        this.loadingUploadFile = false
+
+        this.file = file
+
+        this.previewFile = URL.createObjectURL(file)
+
+        this.$refs.dropzone.disable()
+      },
+      removeFile() {
+        this.file = null
+        this.previewFile = null
+
+        if(this.$refs.dropzone) {
+          this.$refs.dropzone.enable()
+        }
+      },
+      async verifyUpdate() {
+        if(this.file) {
+          await this.uploadFile()
+        } else {
+          await this.update()
+        }
+      },
+      async uploadFile() {
+        if(!this.validateForm) return
+
+        this.loading = true
+
+        let fileName = `${uuidv1()}-${this.file.name}`,
+            refPath = `images/${this.user.id}/perfil/${fileName}`
         
         let imageRef = storageRef.child(refPath)
 
-        await imageRef.put(file)
+        await imageRef.put(this.file)
           .then(async (snapshot) => {
             let url = await snapshot.ref.getDownloadURL()
             
-            this.savePost({
-              imageRef: refPath,
+            this.update({
               url
             })
-
-            this.$refs.dropzone.removeFile(file)
-
-            this.$toast.open({
-              message: 'Imagen publicada',
-              type: 'success',
-              position: 'top-right'
-            });
           })
       },
-      async update({ imageRef, url }) {
+      async update(image) {
+        if(!this.validateForm) return
+
         try {
-          await db.collection("posts").add({
-              userId: this.user.id,
-              imageRef,
-              url,
-              description: '',
-              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          this.loading = true
+
+          let userRef = await db.collection("users").doc(this.user.docId)
+
+          await userRef.update({
+            name: this.name,
+            description: this.description,
+            photo: image ? image.url : ''
+          })
+
+          this.loading = false
+
+          this.authState()
+
+          this.removeFile()
+
+          this.$toast.open({
+            message: 'Datos actualizados',
+            type: 'success',
+            position: 'top-right'
           })
 
         } catch(error) {
+          console.log(error)
+
           this.$toast.open({
-            message: 'Ocurrió un error al subir la imagen.',
+            message: 'Ocurrió un error al actualizar sus datos',
             type: 'error',
             position: 'top-right'
           });
@@ -125,12 +186,28 @@
     computed: {
       ...mapGetters({
         user: 'auth/user'
-      })
+      }),
+      validateForm() {
+        let status = false
+
+        if(this.name && !this.loadingUploadFile) {
+          status = true
+        }
+
+        return status
+      }
     }
   }
 </script>
 
 <style lang="scss">
+.editar-datos {
+  .preview {
+    width: 100%;
+    height: 270px;
+  }
+}
+
 .admin-fotos {
   &_titulo {
     font-size: 6vw;
