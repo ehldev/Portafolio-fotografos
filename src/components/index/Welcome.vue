@@ -8,7 +8,7 @@
       <div class="home__content h-100 py-5 px-3">
         <div class="container h-100">
           <div class="row h-100 justify-content-center align-items-center">
-            <div class="col-md-8">
+            <div class="col-md-9">
               <div class="text-center">
                 <h1 class="home__title text-white font-weight-bold my-0">Muéstrale al mundo</h1>
                 <h2 class="home__subtitle text-white font-weight-normal mt-2">Tus mejores fotos</h2>
@@ -16,7 +16,7 @@
                 <section class="text-left">
                   <FormRegistration v-if="tipoFormulario === 'REGISTRO'">
                     <template slot="link">
-                      <b-button type="button" variant="link" class="text-dark small pl-0" @click="tipoFormulario = 'INGRESAR'">Tengo una cuenta</b-button>
+                      <button type="button" variant="link" class="background-transparent text-dark small pl-0 border-0" @click="tipoFormulario = 'INGRESAR'">Tengo una cuenta</button>
                     </template>
                   </FormRegistration>
 

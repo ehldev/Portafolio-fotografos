@@ -30,4 +30,4 @@ const firebaseAuth = firebase.auth(),
       db = firebase.firestore(),
       firebaseTimestamp = firebase.firestore.FieldValue.serverTimestamp()
 
-export { firebaseAuth, db, firebaseTimestamp }
+export { firebase, firebaseAuth, db, firebaseTimestamp }

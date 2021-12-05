@@ -1,4 +1,4 @@
-import { firebaseAuth, db, firebaseTimestamp } from '@/firebase/firebaseConfig'
+import { firebase, firebaseAuth, db, firebaseTimestamp } from '@/firebase/firebaseConfig'
 
 const generateUsername = email => {
 	let indexArroba = email.indexOf('@')
@@ -36,45 +36,10 @@ export const auth = {
 				          description: ''
 				      	})
 
-			dispatch('login', {email, password})
 			dispatch('sendEmailVerify')
 		},
 		async login({commit, dispatch}, credentials) {
-
 			let userCredential = await firebaseAuth.signInWithEmailAndPassword(credentials.email, credentials.password)
-
-			let { uid, email, emailVerified } = userCredential.user
-
-		    let dataForGetInfo = {
-		  		uid,
-		  		email,
-		  		emailVerified
-		  	}
-		  	
-		  	await dispatch('getUserData', dataForGetInfo)
-
-
-			// return new Promise(async (resolve, reject) => {
-			// 	firebaseAuth.signInWithEmailAndPassword(credentials.email, credentials.password)
-			// 	  .then((userCredential) => {
-
-			// 	  	let { uid, email, emailVerified } = userCredential.user
-
-			// 	    let dataForGetInfo = {
-			// 	  		uid,
-			// 	  		email,
-			// 	  		emailVerified
-			// 	  	}
-
-				  	
-			// 	  	await dispatch('getUserData', dataForGetInfo)
-
-			// 	  	resolve()
-			// 	  })
-			// 	  .catch((error) => {
-			// 	    reject(error)
-			// 	  });
-			// })
 		},
 		async logout({commit}) {
 			firebaseAuth.signOut()
@@ -89,14 +54,14 @@ export const auth = {
 				firebaseAuth.onAuthStateChanged((user) => {
 				  if (user) {
 
-				  	let { uid, email, emailVerified } = user
+				  	let { uid, emailVerified } = user
 
 				  	let dataForGetInfo = {
 				  		uid,
-				  		email,
 				  		emailVerified
 				  	}
 
+				  	console.log('Auth state')
 				  	
 				  	dispatch('getUserData', dataForGetInfo)
 				  		.then(() => resolve())
@@ -125,15 +90,14 @@ export const auth = {
 			const querySnapshot = await db.collection("users").where("userId", "==", data.uid).get()
 
 			querySnapshot.forEach(doc => {
-
-				let { name, username, photo, description } = doc.data()
+				let { name, username, email, photo, description } = doc.data()
 
 			    var userData = {
 			    	id: data.uid,
 			    	name,
 			    	username,
 			    	photo,
-			    	email: data.email,
+			    	email,
 			    	emailVerified: data.emailVerified,
 			    	description,
 			    	docId: doc.id
@@ -141,30 +105,36 @@ export const auth = {
 
 		    	commit('SET_USER', userData)
 			})
+		},
 
-			// await db.collection("users").where("userId", "==", data.uid)
-		 //  		.get()
-			//     .then((querySnapshot) => {
-			//         querySnapshot.forEach((doc) => {
-			//             let { name, username, photo, description } = doc.data()
+		async loginWithGoogle({dispatch}) {
+	      try {
+	      	const provider = new firebase.auth.GoogleAuthProvider();
 
-			// 		    var userData = {
-			// 		    	id: data.uid,
-			// 		    	name,
-			// 		    	username,
-			// 		    	photo,
-			// 		    	email: data.email,
-			// 		    	emailVerified: data.emailVerified,
-			// 		    	description
-			// 		    }
+	        const data = await firebaseAuth.signInWithPopup(provider)
 
-			// 	    	commit('SET_USER', userData)
-			//         });
-			//     })
-			//     .catch((error) => {
-			//         console.log("Error getting documents: ", error);
-			//     });
-		}
+	        // Verificar si el usuario no está registradoo
+	        const querySnapshot = await db.collection("users").where("userId", "==", data.user.uid).get()
+
+	        if(!querySnapshot.docs.length) {
+	        	let user = data.user,
+				        	email = user.email,
+							username = generateUsername(email)
+
+				await db.collection("users").add({
+		          userId: user.uid,
+		          name: user.displayName,
+		          username,
+		          email,
+		          photo: user.photoURL,
+		          createdAt: firebaseTimestamp,
+		          description: ''
+		      	})
+	        }
+	      } catch(e) {
+	      	console.log(e)
+	      }
+	    }
 	},
 	getters: {
 		user(state) {

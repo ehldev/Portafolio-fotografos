@@ -3,7 +3,7 @@
           class="small animate__animated animate__fadeIn"
           variant="info"
           show
-          v-if="!userData.emailVerified"
+          v-if="userData && !userData.emailVerified"
         >
           Su correo aún no ha sido verificado.
           <br />
